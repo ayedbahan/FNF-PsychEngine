@@ -25,7 +25,7 @@ using StringTools;
 
 class MainMenuState extends MusicBeatState
 {
-	public static var psychEngineVersion:String = '0.5.1-git'; //This is also used for Discord RPC
+	public static var psychEngineVersion:String = '0.6.2'; //This is also used for Discord RPC
 	public static var curSelected:Int = 0;
 
 	var menuItems:FlxTypedGroup<FlxSprite>;
@@ -35,10 +35,10 @@ class MainMenuState extends MusicBeatState
 	var optionShit:Array<String> = [
 		'story_mode',
 		'freeplay',
-		#if MODS_ALLOWED 'mods', #end
-		#if ACHIEVEMENTS_ALLOWED 'awards', #end
+		//#if MODS_ALLOWED 'mods', #end
+		//#if ACHIEVEMENTS_ALLOWED 'awards', #end
 		'credits',
-		#if !switch 'donate', #end
+		//#if !switch 'donate', #end
 		'options'
 	];
 
@@ -46,9 +46,14 @@ class MainMenuState extends MusicBeatState
 	var camFollow:FlxObject;
 	var camFollowPos:FlxObject;
 	var debugKeys:Array<FlxKey>;
-
+    var char:FlxSprite;
 	override function create()
 	{
+		#if MODS_ALLOWED
+		Paths.pushGlobalMods();
+		#end
+		WeekData.loadTheFirstEnabledMod();
+
 		#if desktop
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Menus", null);
@@ -113,7 +118,8 @@ class MainMenuState extends MusicBeatState
 			menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
 			menuItem.animation.play('idle');
 			menuItem.ID = i;
-			menuItem.screenCenter(X);
+			menuItem.x = 100;
+			//menuItem.screenCenter(X);
 			menuItems.add(menuItem);
 			var scr:Float = (optionShit.length - 4) * 0.135;
 			if(optionShit.length < 6) scr = 0;
@@ -152,6 +158,41 @@ class MainMenuState extends MusicBeatState
 		#end
 
 		super.create();
+		
+		switch(FlxG.random.int(1, 3))
+		(
+            case 1:
+                char = new FlxSprite(820, 170).loadGraphic(Paths.image('mainmenu/Ezra'));//put your cords and image here
+                char.frames = Paths.getSparrowAtlas('mainmenu/Ezra');//here put the name of the xml
+                char.animation.addByPrefix('idleD', 'idle', 24, true);//on 'idle normal' change it to your xml one
+                char.animation.play('idleE');//you can rename the anim however you want to
+                char.scrollFactor.set();
+                FlxG.sound.play(Paths.sound('appear'), 2);
+                char.flipX = true;//this is for flipping it to look left instead of right you can make it however you want
+                char.antialiasing = ClientPrefs.globalAntialiasing;
+                add(char);
+
+				case 2:
+                char = new FlxSprite(820, 170).loadGraphic(Paths.image('mainmenu/Ayed'));//put your cords and image here
+                char.frames = Paths.getSparrowAtlas('mainmenu/Ayed');//here put the name of the xml
+                char.animation.addByPrefix('idleA', 'idle', 24, true);//on 'idle normal' change it to your xml one
+                char.animation.play('idleA');//you can rename the anim however you want to
+                char.scrollFactor.set();
+                FlxG.sound.play(Paths.sound('appear'), 2);
+                char.flipX = true;//this is for flipping it to look left instead of right you can make it however you want
+                add(char);
+
+				case 3:
+                char = new FlxSprite(820, 170).loadGraphic(Paths.image('mainmenu/DANIEL _BRIZ'));//put your cords and image here
+                char.frames = Paths.getSparrowAtlas('mainmenu/DANIEL _BRIZ');//here put the name of the xml
+                char.animation.addByPrefix('idleD', 'idle', 24, true);//on 'idle normal' change it to your xml one
+                char.animation.play('idleD');//you can rename the anim however you want to
+                char.scrollFactor.set();
+                FlxG.sound.play(Paths.sound('appear'), 2);
+                char.flipX = true;//this is for flipping it to look left instead of right you can make it however you want
+                add(char);
+		)
+
 	}
 
 	#if ACHIEVEMENTS_ALLOWED
@@ -170,6 +211,7 @@ class MainMenuState extends MusicBeatState
 		if (FlxG.sound.music.volume < 0.8)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
+			if(FreeplayState.vocals != null) FreeplayState.vocals.volume += 0.5 * elapsed;
 		}
 
 		var lerpVal:Float = CoolUtil.boundTo(elapsed * 7.5, 0, 1);
@@ -262,7 +304,7 @@ class MainMenuState extends MusicBeatState
 
 		menuItems.forEach(function(spr:FlxSprite)
 		{
-			spr.screenCenter(X);
+			//spr.screenCenter(X);
 		});
 	}
 
