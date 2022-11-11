@@ -161,7 +161,7 @@ class MainMenuState extends MusicBeatState
 		super.create();
 		
 		switch(FlxG.random.Int)
-		(
+		
 		     case 1:
 			char = new FlxSprite(820, 170).loadGraphic(Paths.image('mainmenu/Ezra_menu'));//put your cords and image here
 			char.frames = Paths.getSparrowAtlas('mainmenu/Ezra_menu');//here put the name of the xml
